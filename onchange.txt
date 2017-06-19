@@ -1,0 +1,12 @@
+procedure TdmGlobal.quMzTekUderDATARASChange(Sender: TField);
+var
+  Year,Month,Day: Word;
+begin
+  if not Sender.IsNull then
+  begin
+    DecodeDate(Sender.Value,Year,Month,Day);
+    if Day>1 then
+      Sender.Value:= EncodeDate(Year,Month,1);
+    RR_DateFormat(Sender);
+  end;
+end;

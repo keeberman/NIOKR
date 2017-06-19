@@ -1,0 +1,48 @@
+package vasup;
+
+{$R *.res}
+{$R 'KERNEL\Comps\VRegasup.dcr'}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'VVV Расширение Oracle-интерфейса'}
+{$DESIGNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  vcl,
+  vclx,
+  vcldb,
+  vclsmp,
+  bdertl,
+  RXCTL7,
+  RXDB7,
+  doa41d7,
+  TB97_d7,
+  qrpt,
+  dclaxserver;
+  // Fr5;
+
+contains
+  vregasup in 'KERNEL\Comps\VRegasup.pas',
+  vDbASUP in 'KERNEL\Comps\VDbASUP.pas';
+
+end.
