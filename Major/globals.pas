@@ -5,9 +5,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  DBTables, DB, StdCtrls,DBCtrls,vDBASUP,vWorkForm, Menus, Oracle, OracleData,
+  DBTables, DB, StdCtrls,DBCtrls,vDBASUP,vWorkForm, Registry, Menus, Oracle, OracleData,
   Placemnt, v_krconsts, Variants, frxClass, frxDBSet, frxExportXLSX,
-  frxExportODF, frxExportPDF, frxCross;
+  frxExportODF, frxExportPDF, frxCross, ShellAPI;
 
 resourcestring
   DefaultSchema= 'RN';
@@ -21,6 +21,8 @@ const
   AdminRoleCode= 0; //Роль администратора задачи
   SubSection='Software\BelarusKali\NIOKR\';
   StorageSection= SubSection+'Storage\';
+  REGISTRY_ROOT = SubSection;
+  REGISTRY_OPTIONS = REGISTRY_ROOT + '\Options';
 
   No_Departments_ID= -1;
   All_Departments_ID= 1;
@@ -620,6 +622,12 @@ type
     strngfldTreatyMIPODR_SNAIM: TStringField;
     strngfldTreatyMIPODR_PNAIM: TStringField;
     intgrfldTreatyMIUROVEN_KOD: TIntegerField;
+    qryFileInfo: TOracleDataSet;
+    dtmfldorcldtst1FILE_DATE: TDateTimeField;
+    fltfldorcldtst1FILE_VERSION: TFloatField;
+    fltfldorcldtst1FILE_SIZE: TFloatField;
+    qryFileBody: TOracleDataSet;
+    blbfldFileBodyFILE_BODY: TBlobField;
     function Arabica(WANTED: string):boolean;
     procedure DetailsBeforeOpen(DataSet: TDataSet);
     procedure RR_DateFormat(Sender: TField);
@@ -655,20 +663,20 @@ type
     procedure mm_yyyy_to(Sender: TField);
     procedure quMiExchangeCURRENCY_NOChange(Sender: TField);
   private
+    FIni : TRegistry;
     procedure SetAllPrivileges(OwnerList,ObjectList: TStrings);
-
     // Вычисляет стоимость НДС договора
     procedure SetNDSSummPay(ATreaty : TVASUPQuery);
-
-    { Private declarations }
+    //Компонента для доступа к реестру ОС
   public
-    { Public declarations }
+    procedure CheckUpdates;
   end;
 
 function PutOnClothes(WANTED: string):string;
 function NVL(Field:TField;const Value: Integer):Integer;
 function IsEmptyRecord( ADataSet: TDataSet;
                         const UnImportants:Array of TField):bool;
+procedure AddRegString();                        
 
 procedure AskSingleManualForResFields( AQuery: TOracleQuery;const AName,AKey : string;
                                        AContext: array of string;
@@ -1513,7 +1521,13 @@ begin
       Application.Terminate;
       Exit;
     end;
-}
+}   FIni := TRegistry.Create();
+    if not FIni.OpenKey(REGISTRY_OPTIONS, FALSE) then
+    begin
+      AddRegString();
+      FIni.OpenKey(REGISTRY_OPTIONS, FALSE);
+    end;
+    CheckUpdates;
     OracleObjList:= TStringList.Create;
     OwnerList:= TStringList.Create;
     for I:= 0 to ComponentCount-1 do
@@ -1936,6 +1950,93 @@ begin
   finally
     Query.Destroy;
   end;
+end;
+
+procedure TdmGlobal.CheckUpdates;
+var Fs : TFileStream;
+    Bs : TStream;
+    localexedate, dbexedate : TDateTime;
+    localexeversion, dbexeversion : Integer;
+    appexename, appexemoved : string;
+begin
+  FIni.OpenKey(REGISTRY_OPTIONS, FALSE);
+  if FIni.ReadString('Exe_date') = '' then
+    FIni.WriteString('Exe_date','01.01.1990 12:00:00');
+
+  if FIni.ReadString('Exe_version') = '' then
+    FIni.WriteString('Exe_version', '1');
+
+  localexedate := StrToDateTime(FIni.ReadString('Exe_date'));
+  localexeversion := StrToInt(FIni.ReadString('Exe_version'));
+  qryFileInfo.Open;
+  dbexedate := dtmfldorcldtst1FILE_DATE.AsDateTime;
+  dbexeversion := fltfldorcldtst1FILE_VERSION.AsInteger;
+
+  if (dbexeversion > localexeversion) or
+     (dbexedate > localexedate) then
+  begin
+    appexename := Application.ExeName;
+    appexemoved := appexename + '.old';
+    if Application.MessageBox(PChar('Обнаружена новая версия программы. Обновить?'), 'Новая версия программы', MB_YESNO + MB_ICONQUESTION) = idNo then
+      Exit
+    else
+    begin
+      //Переименовываем самого себя
+      DeleteFile(appexemoved);
+      MoveFile(PChar(appexename),PChar(appexemoved));
+      try
+        qryFileBody.Open;
+
+//       Фишка с ТБлобСтреам-ом почему-то не работает в Делфи7, поэтому пришлось заменить на обычный ТСтреам
+//        Bs := TBlobStream.Create(blbfldFileBodyFILE_BODY as TBlobField, bmRead) as TBlobStream;
+        Bs := qryFileBody.CreateBlobStream(blbfldFileBodyFILE_BODY, bmRead);
+
+        if Bs.Size <> fltfldorcldtst1FILE_SIZE.AsInteger then
+        begin
+          MoveFile(PChar(appexemoved),PChar(appexename));
+          Exit;
+        end;
+
+        Fs := TFileStream.Create(appexename, fmCreate);
+        Fs.Position := 0;
+        blbfldFileBodyFILE_BODY.SaveToStream(Fs);
+        Fs.Free;
+        qryFileBody.Close;
+      except
+        on E:Exception do
+          Application.MessageBox(Pchar('Какая-то ошибка при обновлении...'),'Ошибка', MB_ICONERROR);
+      end;
+
+      if not FileExists(appexename) then
+      begin
+        Application.MessageBox(PChar('Обновление завершилось неудачно. Будет запущена предыдущая версия'), 'Ошибка обновления', MB_ICONERROR);
+        //Возвращаем экзешник обратно
+        MoveFile(PChar(appexemoved),PChar(appexename));
+        Exit;
+      end;
+
+      FIni.WriteString('Exe_version', fltfldorcldtst1FILE_VERSION.AsString);
+      FIni.WriteString('Exe_date', dtmfldorcldtst1FILE_DATE.AsString);
+      ShellExecute(0, nil, pChar(appexename), nil, nil, SW_SHOWMAXIMIZED);
+      Application.Terminate;
+    end;
+  end;
+  FIni.CloseKey;
+end;
+
+procedure AddRegString();
+var MyReg : TRegistry;
+begin
+  MyReg := TRegistry.Create();
+  MyReg.RootKey := HKEY_CURRENT_USER;
+  MyReg.CreateKey(REGISTRY_ROOT);
+  MyReg.CreateKey(REGISTRY_OPTIONS);
+  MyReg.OpenKey(REGISTRY_OPTIONS, FALSE);
+  MyReg.WriteString('Schema','RN');
+  MyReg.WriteString('Exe_version', '1');
+  MyReg.WriteString('Exe_date', '01.01.1990 12:00:00');
+  MyReg.WriteString('Exe_path', 'C:\ASUP\NIOKR\');
+  MyReg.CloseKey;
 end;
 
 initialization

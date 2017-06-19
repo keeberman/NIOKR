@@ -1,10 +1,10 @@
 object dmGlobal: TdmGlobal
   OldCreateOrder = True
   OnCreate = DataModuleCreate
-  Left = 856
-  Top = 112
-  Height = 753
-  Width = 836
+  Left = 974
+  Top = 114
+  Height = 776
+  Width = 825
   object Builder: TVBuilder
     Active = False
     Left = 32
@@ -21035,5 +21035,44 @@ object dmGlobal: TdmGlobal
     BCDToCurrency = False
     Left = 504
     Top = 536
+  end
+  object qryFileInfo: TOracleDataSet
+    SQL.Strings = (
+      'SELECT FILE_DATE, FILE_VERSION, FILE_SIZE'
+      '  FROM RN.SYSTEMFILES'
+      ' WHERE ID = 1')
+    Optimize = False
+    QBEDefinition.QBEFieldDefs = {
+      04000000030000000900000046494C455F444154450100000000000C00000046
+      494C455F56455253494F4E0100000000000900000046494C455F53495A450100
+      00000000}
+    Session = seOracle
+    Left = 120
+    Top = 576
+    object dtmfldorcldtst1FILE_DATE: TDateTimeField
+      FieldName = 'FILE_DATE'
+    end
+    object fltfldorcldtst1FILE_VERSION: TFloatField
+      FieldName = 'FILE_VERSION'
+    end
+    object fltfldorcldtst1FILE_SIZE: TFloatField
+      FieldName = 'FILE_SIZE'
+      Required = True
+    end
+  end
+  object qryFileBody: TOracleDataSet
+    SQL.Strings = (
+      'SELECT FILE_BODY'
+      '  FROM RN.SYSTEMFILES'
+      ' WHERE ID = 1')
+    Optimize = False
+    QBEDefinition.QBEFieldDefs = {04000000010000000900000046494C455F424F4459000000000000}
+    Session = seOracle
+    Left = 80
+    Top = 648
+    object blbfldFileBodyFILE_BODY: TBlobField
+      FieldName = 'FILE_BODY'
+      BlobType = ftOraBlob
+    end
   end
 end

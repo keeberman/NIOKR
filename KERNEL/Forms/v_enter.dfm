@@ -1,11 +1,11 @@
 inherited fmEnter: TfmEnter
-  Left = 518
-  Top = 235
+  Left = 519
+  Top = 236
   HelpContext = 130
   VertScrollBar.Range = 0
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
-  Caption = 'Вход в базу данных'
+  Caption = #1042#1093#1086#1076' '#1074' '#1073#1072#1079#1091' '#1076#1072#1085#1085#1099#1093
   ClientHeight = 174
   ClientWidth = 294
   Icon.Data = {
@@ -715,7 +715,7 @@ inherited fmEnter: TfmEnter
       Top = 11
       Width = 68
       Height = 13
-      Caption = 'База данных:'
+      Caption = #1041#1072#1079#1072' '#1076#1072#1085#1085#1099#1093':'
       Font.Charset = RUSSIAN_CHARSET
       Font.Color = clBlack
       Font.Height = -11
@@ -747,7 +747,7 @@ inherited fmEnter: TfmEnter
       Top = 20
       Width = 99
       Height = 13
-      Caption = '&Имя пользователя:'
+      Caption = '&'#1048#1084#1103' '#1087#1086#1083#1100#1079#1086#1074#1072#1090#1077#1083#1103':'
       Font.Charset = RUSSIAN_CHARSET
       Font.Color = clBlack
       Font.Height = -11
@@ -760,7 +760,7 @@ inherited fmEnter: TfmEnter
       Top = 63
       Width = 41
       Height = 13
-      Caption = '&Пароль:'
+      Caption = '&'#1055#1072#1088#1086#1083#1100':'
       FocusControl = edPassword
       Font.Charset = RUSSIAN_CHARSET
       Font.Color = clBlack
@@ -881,7 +881,7 @@ inherited fmEnter: TfmEnter
         Top = 5
         Width = 92
         Height = 26
-        Caption = 'Отмена'
+        Caption = #1054#1090#1084#1077#1085#1072
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -12
