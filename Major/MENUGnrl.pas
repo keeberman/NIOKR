@@ -3198,7 +3198,7 @@ begin
  // Создадим объект Excel.Application
  try
    Excel:=CreateOLEObject('Excel.Application');
-   Excel.Visible := True;//////////////////-----------------+++++++++++++++
+   //Excel.Visible := True;//////////////////-----------------+++++++++++++++
  except
    Screen.Cursor:=crDefault;
    MessageBox(Handle, 'Не установлено программное обеспечение MS Excel(r) версии не ниже 97',
@@ -3246,7 +3246,7 @@ begin
 
    // ФОРМА RN-06
    if Sender=vpRN06 then
-    Excel.WorkSheets[1].Cells[2, 1] := 'ДОГОВОРЫ ФИНАНСИРУЕМЫЕ ИЗ ПРИБЫЛИ НА '
+    Excel.WorkSheets[1].Cells[2, 1] := 'ДОГОВОРЫ ФИНАНСИРУЕМЫЕ ИЗ СОБСТВЕННЫХ СРЕДСТВ ОАО ''''БЕЛАРУСЬКАЛИЙ'''' '
                                        + rep_year + ' ГОД';
    // Выполняем отчет
    with dmglobal.quRN05_RN06_Rep do
@@ -6216,7 +6216,7 @@ begin
             st_month := StrToInt(FormatDateTime('mm', stages_dateto));
             // Заносим стоимость этапа в график финансирование, в графу месяца,
             // который следуют после месяца сдачи этапа
-            Excel.WorkSheets[1].Cells[idx, 3 + st_month] := FloatToStr(RoundTo(summpay_stage, -2));
+            Excel.WorkSheets[1].Cells[idx, 3 + st_month] := StringReplace(FloatToStr(RoundTo(summpay_stage, -2)), ',', '.', [rfReplaceAll]);
 
             prev_id := Integer(Field('ID'));
             inc(idx);
@@ -6361,45 +6361,32 @@ var
   I : Integer;
   RowHeight : Extended;
   summpay_stage : Extended;
-
   //v_Date : TDateTime;
-
   Istfin_kod : Integer;
   ConcDogID  : Integer;
-
   rec_count : Integer;
   //num : String;
-
   //changedIstFin : boolean;
 
   MainFormula : String;
   Formula : String;
 
   rows : Integer;
-
   {count_row_BreakPage : Integer;
-
   curr_row : Integer;
-
   row_BreakPage : Integer;
-
   J : Integer;
-
   LineNumsOfBreakPages : Array Of Integer;
   countLines : Array Of Integer;
-
   ind : Integer;
-
   count_row : Integer;}
 begin
   //count_row := 0;
 
   St:=ExtractFilePath(Application.ExeName) + 'report\RN-13.xlt';
 
-
   // Делаем недоступным приложение, для пользователя
   SetBusy;
-
   // СОздаем поток
   thread := TLRQThread.Create(true);
   // Указываем, что, когда поток закончит выполнение, он автоматически освободил память
@@ -6445,8 +6432,6 @@ begin
     Exit;
   end;
   try
-
-
     InvalidateRect(Handle, nil, True);
     UpdateWindow(Handle);
     // Добавим новую книгу
@@ -6459,16 +6444,11 @@ begin
                  'Ошибка', mb_OK or mb_IconHand);
       Exit;
     end;
-
-
     quReport := dmglobal.quRN13_Rep;
-
     // Выполняем отчет
     with quReport do
     begin
-
       Execute;
-
       idx:= beg_new_table;
       prev_id := -1;
       count_stages := 0;
@@ -6486,50 +6466,37 @@ begin
         rec_count := FieldAsInteger('rec_count');
       if rec_count > 0 then
       begin
-
         buildingReport.Caption := 'Формируется отчет';
         buildingReport.SetCaption('Идет процесс формирования отчета...');
-
         // Устанавливаем начальные значения в окне buildingReport
         buildingReport.reset;
-
         // Делаем в окне buildingReport видимым ProgressBar
         buildingReport.visibleProgressBar(true);
-
         // Сообщаем  окну buildingReport  о начала копирования данных
         buildingReport.Start;
-
         // Устанавливаем максиальное значение ProgressBar в окне
         buildingReport.SetMax(rec_count {* 2});
       end;
-
       //SetLength(LineNumsOfBreakPages, rec_count);
       //SetLength(countLines, rec_count);
       //Ind := 0;
-
       while not EOF do
       begin
         try
-
           if (Integer(Field('ID')) <> prev_id) then
           begin // Следующий договор
-
             if (Istfin_kod <> Integer(Field('Istfin_kod'))) or
                (FieldIsNull('ConcDogID') and (ConcDogID <> -1)) or
                ((not FieldIsNull('ConcDogID')) and (ConcDogID <> Integer(Field('ConcDogID'))))
             then
             begin
-
               {if Ind > 0 then // Строка ИТОГО
                 inc(countLines[Ind-1]);}
-
               Istfin_kod := Integer(Field('Istfin_kod'));
               if FieldIsNull('ConcDogID') then
                 ConcDogID := -1
               else
                 ConcDogID := Integer(Field('ConcDogID'));
-
-
               if Formula <> '' then
               begin
                 // Формируем формулу ИТОГО
@@ -6537,21 +6504,16 @@ begin
                 // Вставляем строку ИТОГО
                 Excel.Worksheets[1].Rows[idx + 1].Insert;
                 Excel.WorkSheets[1].Rows[idx + offs_table + 5].Copy(Excel.Worksheets[1].Rows[idx]);
-
                 Excel.WorkSheets[1].Cells[idx, 5].Formula := Formula;
-
                 // Формируем формулу ВСЕГО
                 if MainFormula = '' then
                   MainFormula := '=Sum(E' + IntToStr(idx)
                 else
                   MainFormula := MainFormula + ', E' + IntToStr(idx);
-
                 inc(idx);
               end;
-
               // Формируем формулу ИТОГО
               Formula := '=Sum(F' + IntToStr(idx) + ':';
-
               // Вставляем строку с источником финансирования
               Excel.Worksheets[1].Rows[idx + 1].Insert;
               case ISTFIN_KOD of
@@ -6566,26 +6528,20 @@ begin
                         with TOracleQuery.Create(Self) do
                         begin
                           Session:= dmGlobal.seOracle;
-
                           SQL.Append('SELECT  ''ПО ДОГОВОРУ №'' || NUM ');
                           SQL.Append('  FROM RN.MITRCONCERN');
                           SQL.Append(' WHERE  ID = :DOG_ID');
-
                           DeclareVariable('DOG_ID', otInteger);
                           SetVariable('DOG_ID', ConcDogID);
                           Execute;
-
                           Excel.WorkSheets[1].Cells[idx, 1] := Excel.WorkSheets[1].Cells[idx, 1].Text + String(FieldAsString(0));
-
                           Destroy;
                         end;
                       end;
                     end;
               end;
-
               // Устанавливаем флажок, что была вставлина строка с источником финансирования
               //changedIstFin := true;
-
               inc(idx);
             end;
 
@@ -6595,7 +6551,6 @@ begin
 
             Excel.Worksheets[1].Rows[idx].Insert;
             Excel.WorkSheets[1].Rows[idx + offs_table + 2].Copy(Excel.Worksheets[1].Rows[idx]);
-
             Excel.WorkSheets[1].Cells[idx, 3] := FieldAsString('subject');
             Excel.WorkSheets[1].Cells[idx, 2] := FieldAsString('Name');
             Excel.WorkSheets[1].Cells[idx, 1] := IntToStr(count);
@@ -6626,7 +6581,7 @@ begin
           else
             summpay_stage := Extended(Field('stage_summpay'));
 
-          Excel.WorkSheets[1].Cells[idx, 6] := FloatToStr(RoundTo(summpay_stage, -2));
+          Excel.WorkSheets[1].Cells[idx, 6] := StringReplace(FloatToStr(RoundTo(summpay_stage, -2)), ',', '.', [rfReplaceAll]);
 
           Inc(idx);
           inc(num_stage);
@@ -6634,9 +6589,7 @@ begin
           if num_stage = count_stages then
           begin
             // Все данные о невыполненых этапов договора занесены Excel ljrevtyn
-
             // Формирыем документ так, что он выгледил красиво
-
             if count_stages = 1 then
             begin
               rows := 2;
@@ -6646,9 +6599,7 @@ begin
             end
             else
               rows := count_stages;
-
             Excel.WorkSheets[1].Cells[idx - 1, 1] := FieldAsString('num');
-
             Excel.WorkSheets[1].Rows[idx - rows].AutoFit;
             RowHeight := Excel.WorkSheets[1].Rows[idx - rows].Height;
             if count_stages > 1 then
@@ -6692,12 +6643,10 @@ begin
             LineNumsOfBreakPages[Ind] := row_BreakPage;
             inc(Ind);
             inc(count_row, count_row_BreakPage);}
-
              // Увеличеваем значение ProgressBar на еденицу в окне copingForm
             buildingReport.Next;
           end;
           next;
-
         except
           Screen.Cursor:=crDefault;
           MessageBox(Handle, 'Ошибка - нет возможности добавить данные в ячейки.',
@@ -6714,7 +6663,6 @@ begin
       // Вставляем строку ИТОГО
       Excel.Worksheets[1].Rows[idx + 1].Insert;
       Excel.WorkSheets[1].Rows[idx + offs_table + 5].Copy(Excel.Worksheets[1].Rows[idx]);
-
       Excel.WorkSheets[1].Cells[idx, 5].Formula := Formula;
 
       // Формируем формулу ВСЕГО
@@ -6722,19 +6670,14 @@ begin
         MainFormula := '=SUM(E' + IntToStr(idx) + ')'
       else
         MainFormula := MainFormula +  ', E' + IntToStr(idx) + ')';
-
       inc(idx);
-
       // Вставляем строку ВСЕГО
       Excel.Worksheets[1].Rows[idx + 1].Insert;
       Excel.WorkSheets[1].Rows[idx + offs_table + 6].Copy(Excel.Worksheets[1].Rows[idx]);
       Excel.WorkSheets[1].Cells[idx, 5].Formula := MainFormula;
-
       inc(idx);
     end;
-
     //buildingReport.NewValue((count_row + 1) * 2, count_row + 1);
-
     // Для красоты, в строчках LineNumsOfBreakPages, если необходимо, устанавливаем разрыв страницы
     {for I := 1 to rec_count - 1 do
     begin
@@ -6752,8 +6695,6 @@ begin
           buildingReport.Next;
       end;
     end;}
-
-
     // удаляем записи шаблонной таблицы
     Excel.Worksheets[1].Range['$'+IntToStr(idx) + ':$'+IntToStr(idx+8)].Delete;
 
@@ -6761,7 +6702,6 @@ begin
     begin
       // Увеличеваем значение ProgressBar на еденицу в окне copingForm
       //buildingReport.Next;
-
       // Сообщаем  окну buildingReport  о финише формирования отчета
       buildingReport.Finish;
     end;
@@ -6769,13 +6709,11 @@ begin
   finally
     Screen.Cursor:=crDefault;
     Excel.Visible:=True;
-
     // Окну buildingReport сообщаем, что формирования отчета закончилось
     // и оно должно снять блокировку данных
     buildingReport.SetEndCopy;
     // Закрываем окно buildingReport и освобождаем память занимаемой данным окном
     buildingReport.Close;
-
     // Делаем доступным приложение, для пользователя
     resetBusy;
   end;
@@ -6786,18 +6724,12 @@ const
   //beg_table : integer = 5; // Начало шаблона таблицы
   beg_new_table : integer = 6; // Начало самой таблицы
   SEMAPHORE : string = 'NIOKR_SEMAPHORE';
-
   Max_count_stages : Integer = 10;
-
   cols : Integer = 9;
-
   offs_table : Integer = 3;
-
   row_no_page_break : integer = 2; //Номер строки, где нет разрыва страницы
-
 var
   thread : TLRQThread;
-
   prevMonth : TDateTime;
   rep_Date  : TDateTime;
   month, year : Integer;
@@ -6815,30 +6747,20 @@ var
   I : Integer;
   RowHeight : Extended;
   summpay_stage : Extended;
-
   rec_count : Integer;
-
   Istfin_kod : Integer;
   ConcDogID  : Integer;
-
   //changedIstFin : boolean;
-
   MainFormula : String;
   Formula : String;
-
   rows : Integer;
 
   {count_row_BreakPage : Integer;
-
   curr_row : Integer;
-
   row_BreakPage : Integer;
-
   J : Integer;
-
   LineNumsOfBreakPages : Array Of Integer;
   countLines : Array Of Integer;
-
   ind : Integer;
   count_row : Integer;}
 
@@ -6862,7 +6784,6 @@ begin
     else begin  Free; Exit; end;
   end;
   rep_Date := EncodeDate(year, month, 1);
-
   St:=ExtractFilePath(Application.ExeName) + 'report\RN-14.xlt';
 
   // Делаем недоступным приложение, для пользователя
@@ -6890,10 +6811,8 @@ begin
 
   // Запускаем поток, который создаст форму buildingReport и отобразит его на экране
   thread.Resume;
-
-  // Ждем, пока поток thread создаст форму buildingReport
+   // Ждем, пока поток thread создаст форму buildingReport
   WaitForSingleObject(FSemaphore, INFINITE);
-
   buildingReport.visibleProgressBar(false);
   buildingReport.Caption := 'Идет процесс подготовки формирования отчета';
   buildingReport.SetCaption('Идет процесс подготовки формирования отчета...');
@@ -6927,10 +6846,8 @@ begin
     end;
 
   quReport := dmglobal.quRN14_Rep;
-
-  Excel.WorkSheets[1].Cells[2, 1] := Excel.WorkSheets[1].Cells[2, 1].Text  + GetPrepositionalMonth(month) + '  ' + rep_year + ' ГОДА';
-
-  // Выполняем отчет
+   Excel.WorkSheets[1].Cells[2, 1] := Excel.WorkSheets[1].Cells[2, 1].Text  + GetPrepositionalMonth(month) + '  ' + rep_year + ' ГОДА';
+   // Выполняем отчет
   with quReport do
   begin
     SetVariable('DATEFROM', rep_Date);
@@ -6955,36 +6872,23 @@ begin
       rec_count := FieldAsInteger('rec_count');
     if rec_count > 0 then
     begin
-
       buildingReport.Caption := 'Формируется отчет';
       buildingReport.SetCaption('Идет процесс формирования отчета...');
-
-      // Устанавливаем начальные значения в окне buildingReport
+       // Устанавливаем начальные значения в окне buildingReport
       buildingReport.reset;
-
-      // Делаем в окне buildingReport видимым ProgressBar
+       // Делаем в окне buildingReport видимым ProgressBar
       buildingReport.visibleProgressBar(true);
-
       // Сообщаем  окну buildingReport  о начала копирования данных
       buildingReport.Start;
-
       // Устанавливаем максиальное значение ProgressBar в окне
       buildingReport.SetMax(rec_count {* 2});
     end;
 
-    {SetLength(LineNumsOfBreakPages, rec_count);
-    SetLength(countLines, rec_count);
-    Ind := 0;}
-
     while not EOF do
     begin
       try
-
-
         if (Integer(Field('ID')) <> prev_id) then
         begin // Следующий договор
-
-
           if (Istfin_kod <> Integer(Field('Istfin_kod'))) or
              (FieldIsNull('ConcDogID') and (ConcDogID <> -1)) or
              ((not FieldIsNull('ConcDogID')) and (ConcDogID <> Integer(Field('ConcDogID'))))
@@ -6992,13 +6896,11 @@ begin
           begin
             {if Ind > 0 then // Строка ИТОГО
               inc(countLines[Ind-1]); }
-
             Istfin_kod := Integer(Field('Istfin_kod'));
             if FieldIsNull('ConcDogID') then
               ConcDogID := -1
             else
               ConcDogID := Integer(Field('ConcDogID'));
-
 
             if Formula <> '' then
             begin
@@ -7016,10 +6918,7 @@ begin
 
               inc(idx);
             end;
-
             Formula := '=Sum(F' + IntToStr(idx) + ':';
-
-
             // Вставляем строку с источником финансирования
             Excel.Worksheets[1].Rows[idx + 1].Insert;
 
@@ -7037,21 +6936,15 @@ begin
                         SQL.Append('SELECT  ''ПО ДОГОВОРУ №'' || NUM ');
                         SQL.Append('  FROM RN.MITRCONCERN');
                         SQL.Append(' WHERE  ID = :DOG_ID');
-
                         DeclareVariable('DOG_ID', otInteger);
                         SetVariable('DOG_ID', ConcDogID);
                         Execute;
-
                         Excel.WorkSheets[1].Cells[idx, 1] := Excel.WorkSheets[1].Cells[idx, 1].Text + String(FieldAsString(0));
-
                         Destroy;
                       end;
                     end;
                   end;
             end;
-
-            //changedIstFin := true;
-
             inc(idx);
           end;
 
@@ -7102,7 +6995,7 @@ begin
         else
           summpay_stage := Extended(Field('stage_summpay'));
 
-        Excel.WorkSheets[1].Cells[idx, 6] := FloatToStr(RoundTo(summpay_stage, -2));
+        Excel.WorkSheets[1].Cells[idx, 6] := StringReplace(FloatToStr(RoundTo(summpay_stage, -2)), ',', '.', [rfReplaceAll]);
 
         Inc(idx);
         inc(num_stage);
@@ -8232,7 +8125,6 @@ var
   count_treaty : Integer;
 begin
   inherited;
-
   year := 0;
   v_date := 0;
   PickYear := TfmPickYear.Create(Self);
@@ -8246,9 +8138,7 @@ begin
       rep_year := IntToStr(PickYear.se_Year.Value);
     end
     else begin  PickYear.Free; Exit; end;
-
     AConcern_DOG := -1;
-
     if Sender = vpRN19 then
       AConcern_DOG := GetConcern_Treaty(incMonth(v_date, 11));
 
@@ -8262,14 +8152,12 @@ begin
 
   // Делаем недоступным приложение, для пользователя
   SetBusy;
-
   // СОздаем поток
   thread := TLRQThread.Create(true);
   // Указываем, что, когда поток закончит выполнение, он автоматически освободил память
   thread.FreeOnTerminate := true;
   // Указываем метод, который должен выполнить поток
   thread.OnDo := ShowDialogBox;
-
   // Создаем семафор, который будет синхронизировать работу потоков с переменной buildingReport
   I := -1;
   FSemaphore := OpenSemaphore(MUTANT_ALL_ACCESS, true, PChar(SEMAPHORE));
@@ -8285,17 +8173,13 @@ begin
 
   // Запускаем поток, который создаст форму buildingReport и отобразит его на экране
   thread.Resume;
-
   // Ждем, пока поток thread создаст форму buildingReport
   WaitForSingleObject(FSemaphore, INFINITE);
-
   buildingReport.visibleProgressBar(false);
   buildingReport.Caption := 'Идет процесс подготовки формирования отчета';
   buildingReport.SetCaption('Идет процесс подготовки формирования отчета...');
-
   // Уничтожаем семафор
   CloseHandle(FSemaphore);
-
   // Выбираем записи в Excel
   Screen.Cursor:=crHourGlass;
   // Создадим объект Excel.Application
@@ -8321,7 +8205,7 @@ begin
       Exit;
     end;
 
-    Excel.WorkSheets[1].Cells[5, 1] := Excel.WorkSheets[1].Cells[5, 1].Text + ' ' + rep_year + ' ГОД';
+    Excel.WorkSheets[1].Cells[6, 1] := Excel.WorkSheets[1].Cells[6, 1].Text + ' ' + rep_year + ' ГОД';
     Excel.WorkSheets[1].Cells[beg_table  - 2, 7] := Excel.WorkSheets[1].Cells[beg_table - 2 , 7].Text + ' ' + rep_year + ' году';
 
     if Sender=vpRN19 then
@@ -8390,16 +8274,12 @@ begin
       begin
         buildingReport.Caption := 'Формируется отчет';
         buildingReport.SetCaption('Идет процесс формирования отчета...');
-
         // Устанавливаем начальные значения в окне buildingReport
         buildingReport.reset;
-
         // Делаем в окне buildingReport видимым ProgressBar
         buildingReport.visibleProgressBar(true);
-
         // Сообщаем  окну buildingReport  о начала копирования данных
         buildingReport.Start;
-
         // Устанавливаем максиальное значение ProgressBar в окне
         buildingReport.SetMax(count_treaty {* 2 + CountTailRows - 1});
       end;
@@ -8412,9 +8292,7 @@ begin
           begin // Следующий договор
             summpay_stages_closed := 0;
             count_stages := Integer(Field('COUNT_PER_TREATY')); // Количество этапов на договор
-
             summpay_per_year := 0;
-
             if Sender=vpRN20 then
               summpay_per_year := 0;
 
@@ -8533,7 +8411,7 @@ begin
             begin
               Excel.WorkSheets[1].Cells[idx-1, 3] := 'Курс ' + FloatToStr(erate) + ' ' + String(Field('CURRENCY_NAME'))
                                                      + '  на ' + DateToStr(erate_date);
-              Excel.WorkSheets[1].Cells[idx-2, 5] := FormatFloat('#0.00', RoundTo(summpay_per_treaty*erate+summpay_stages_closed, -2));
+              Excel.WorkSheets[1].Cells[idx-2, 5] := RoundTo(summpay_per_treaty*erate+summpay_stages_closed, -2);
               if Field('DATEFROM_YEAR') < '2004' then // Т.к. в БД нет всех данных до 2004 года,
                                                       // то значения графы в отчете ВЫП. В ПРЕДЫДУЩИЕ ГОДЫ
                                                       // для договоров заключенных раннее 2004 года считаем по особому
@@ -8607,9 +8485,7 @@ begin
     // Закрываем окно buildingReport и освобождаем память занимаемой данным окном
     buildingReport.Close;
     //buildingReport.Destroy;
-
     Screen.Cursor:= crDefault;
-
     // Делаем доступным приложение, для пользователя
     resetBusy;
   end;         
@@ -10626,19 +10502,15 @@ begin
     month := 1;
 
   rep_month := AnsiUpperCase(GetMonth(month - 1));
-
   St:=ExtractFilePath(Application.ExeName) + 'report\payment_1.xlt';
-
   // Делаем недоступным приложение, для пользователя
   SetBusy;
-
   // СОздаем поток
   thread := TLRQThread.Create(true);
   // Указываем, что, когда поток закончит выполнение, он автоматически освободил память
   thread.FreeOnTerminate := true;
   // Указываем метод, который должен выполнить поток
   thread.OnDo := ShowDialogBox;
-
   // Создаем семафор, который будет синхронизировать работу потоков с переменной buildingReport
   I := -1;
   FSemaphore := OpenSemaphore(MUTANT_ALL_ACCESS, true, PChar(SEMAPHORE));
@@ -10651,20 +10523,15 @@ begin
     FSemaphore := CreateSemaphore(nil, 0, 1, PChar(SEMAPHORE + IntToStr(I)))
   else
     FSemaphore := CreateSemaphore(nil, 0, 1, PChar(SEMAPHORE));
-
   // Запускаем поток, который создаст форму buildingReport и отобразит его на экране
   thread.Resume;
-
   // Ждем, пока поток thread создаст форму buildingReport
   WaitForSingleObject(FSemaphore, INFINITE);
-
   buildingReport.visibleProgressBar(false);
   buildingReport.Caption := 'Идет процесс подготовки формирования отчета';
   buildingReport.SetCaption('Идет процесс подготовки формирования отчета...');
-
   // Уничтожаем семафор
   CloseHandle(FSemaphore);
-
   // Выбираем записи в Excel
   Screen.Cursor:=crHourGlass;
   // Создадим объект Excel.Application
@@ -10689,18 +10556,15 @@ begin
                  'Ошибка', mb_OK or mb_IconHand);
       Exit;
     end;
-
     str := Excel.WorkSheets[1].Cells[1, 1];
-    str := str + ' ' + rep_year + 'г.';
+    str := str + ' ' + rep_year + ' г.';
     Excel.WorkSheets[1].Cells[1, 1] := str;
-
-    str := Excel.WorkSheets[1].Cells[beg_new_table - 3, 8];
+    str := Excel.WorkSheets[1].Cells[beg_new_table - 3, 10];
     str := str + rep_month;
-    Excel.WorkSheets[1].Cells[beg_new_table - 3, 8] := str;
-
-    str := Excel.WorkSheets[1].Cells[beg_new_table - 3, 9];
-    str := str + rep_year + 'г.';
-    Excel.WorkSheets[1].Cells[beg_new_table - 3, 9] := str;
+    Excel.WorkSheets[1].Cells[beg_new_table - 3, 10] := str;
+    str := Excel.WorkSheets[1].Cells[beg_new_table - 3, 11];
+    str := str + rep_year + ' г.';
+    Excel.WorkSheets[1].Cells[beg_new_table - 3, 11] := str;
 
     idx:= beg_new_table;
 
@@ -10708,23 +10572,16 @@ begin
 
     buildingReport.Caption := 'Формируется отчет';
     buildingReport.SetCaption('Идет процесс формирования отчета...');
-
     // Устанавливаем начальные значения в окне buildingReport
     buildingReport.reset;
-
     // Делаем в окне buildingReport видимым ProgressBar
     buildingReport.visibleProgressBar(true);
-
     // Сообщаем  окну buildingReport  о начала копирования данных
     buildingReport.Start;
-
     quReport := dmglobal.quPayment_1;
-
     quReport.SetVariable('REP_DATE', EncodeDate(year, month, 1));
     quReport.Execute;
-
     prev_id := -1;
-
     count_stages := 0;
 
     with quReport do
@@ -10762,10 +10619,10 @@ begin
             Excel.WorkSheets[1].Cells[idx, 2] := StringReplace(FieldAsString('TR_NUM'), #13#10,#10, [rfReplaceAll]);
             Excel.WorkSheets[1].Cells[idx, 3] := StringReplace(FieldAsString('TR_SUBJECT'), #13#10,#10, [rfReplaceAll]);
 
-            Excel.WorkSheets[1].Cells[idx, 9] := FloatToStr(RoundTo(FieldAsFloat('MONTH_TREATY_SUMMPAY'), -2));
-            Excel.WorkSheets[1].Cells[idx, 10] := FloatToStr(RoundTo(FieldAsFloat('YEAR_TREATY_SUMMPAY'), -2));
+            Excel.WorkSheets[1].Cells[idx, 10] := FloatToStr(RoundTo(FieldAsFloat('MONTH_TREATY_SUMMPAY'), -2));
+            Excel.WorkSheets[1].Cells[idx, 11] := FloatToStr(RoundTo(FieldAsFloat('YEAR_TREATY_SUMMPAY'), -2));
 
-            Excel.WorkSheets[1].Cells[idx, 8] := StringReplace(FieldAsString('REPORTING'), #13#10,#10, [rfReplaceAll]);
+            Excel.WorkSheets[1].Cells[idx, 9] := StringReplace(FieldAsString('REPORTING'), #13#10,#10, [rfReplaceAll]);
           end
           else
           begin
@@ -10810,8 +10667,9 @@ begin
           end;
 
           Excel.WorkSheets[1].Cells[idx, 4] := FieldAsString('ST_NUM');
-          Excel.WorkSheets[1].Cells[idx, 6] := FieldAsString('DATEPAY');
-          Excel.WorkSheets[1].Cells[idx, 7] := FieldAsString('NUMPAY');
+          Excel.WorkSheets[1].Cells[idx, 6] := FieldAsString('DATEACT');
+          Excel.WorkSheets[1].Cells[idx, 7] := FieldAsString('DATEPAY');
+          Excel.WorkSheets[1].Cells[idx, 8] := FieldAsString('NUMPAY');
 
           if ((count_stages + 1) = FieldAsInteger('COUNT_TREATY_STAGE')) and
              (count_stages <> 0) then

@@ -115,7 +115,7 @@ AutoIncBuild=1
 MajorVer=1
 MinorVer=0
 Release=1
-Build=466
+Build=471
 Debug=0
 PreRelease=0
 Special=0
@@ -126,7 +126,7 @@ CodePage=1251
 [Version Info Keys]
 CompanyName=ОАСУ ПО Беларуськалий
 FileDescription=Ведение договоров НИОКР
-FileVersion=1.0.1.466
+FileVersion=1.0.1.471
 InternalName=
 LegalCopyright=ОАСУ ПО Беларуськалий
 LegalTrademarks=GYN
@@ -134,14 +134,3 @@ OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
 Comments=Ведение учёта договоров по НИОКР
-[HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=D:\MyProjects\NIOKR\Source Code\Client Side\KERNEL\Comps
-[HistoryLists\hlUnitAliases]
-Count=1
-Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
-[HistoryLists\hlSearchPath]
-Count=3
-Item0=$(DELPHI)\Lib\Debug;$(DELPHI)\Doa341;$(DELPHI)\Source\Toolsapi;D:\Delphi5\Comp\Doa;D:\Delphi5\Comp\Rx\Units;D:\Delphi5\Comp\Tlb97\Source;D:\Delphi5\Comp\Fr\Source
-Item1=$(DELPHI)\Lib\Debug;$(DELPHI)\Doa341;$(DELPHI)\Source\Toolsapi;D:\Delphi5\Comp\Doa;D:\Delphi5\Comp\Rx\Units;D:\Delphi5\Comp\Tlb97\Source;D:\Delphi5\Comp\Fr\Source;D:\MyProjects\NIOKR\Source Code\Client Side\KERNEL\Forms;D:\MyProjects\NIOKR\Source Code\Client Side\KERNEL\Comps
-Item2=$(DELPHI)\Lib\Debug;$(DELPHI)\Doa341;$(DELPHI)\Source\Toolsapi;D:\Delphi5\Comp\Doa;D:\Delphi5\Comp\Rx\Units;D:\Delphi5\Comp\Tlb97\Source;D:\Delphi5\Comp\Fr\Source;D:\MyProjects\NIOKR\Source Code\Client Side\KERNEL\Forms

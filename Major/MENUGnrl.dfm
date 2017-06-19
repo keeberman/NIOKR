@@ -1,6 +1,6 @@
 inherited fmMainMenu: TfmMainMenu
-  Left = 520
-  Top = 255
+  Left = 564
+  Top = 229
   Width = 705
   Height = 478
   HelpContext = 10

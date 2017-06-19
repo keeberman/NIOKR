@@ -6821,6 +6821,7 @@ object dmGlobal: TdmGlobal
       '       tr.STATUS tr_status,'
       '       agr.subject tr_subject,'
       '       st.num st_num,'
+      '       st.dateact,'
       '       st.summpay st_summpay,'
       #9'st.Reporting,'
       
@@ -7254,7 +7255,7 @@ object dmGlobal: TdmGlobal
     Top = 56
   end
   object frRN01_02: TfrxReport
-    Version = '5.2.3'
+    Version = '5.4.6'
     DotMatrixReport = False
     EngineOptions.DoublePass = True
     IniFile = '\Software\Fast Reports'
@@ -8332,6 +8333,7 @@ object dmGlobal: TdmGlobal
     Background = False
     HTMLTags = True
     Quality = 100
+    Transparency = False
     Author = 'FastReport'
     Subject = 'FastReport PDF export'
     ProtectionFlags = [ePrint, eModify, eCopy, eAnnot]
@@ -8341,6 +8343,7 @@ object dmGlobal: TdmGlobal
     FitWindow = False
     CenterWindow = False
     PrintScaling = False
+    PdfA = False
     Left = 360
     Top = 648
   end
@@ -8352,6 +8355,7 @@ object dmGlobal: TdmGlobal
     PictureType = gpPNG
     Background = True
     Creator = 'FastReport'
+    SingleSheet = False
     Language = 'en'
     SuppressPageHeadersFooters = False
     Left = 424
@@ -8549,7 +8553,7 @@ object dmGlobal: TdmGlobal
     Top = 56
   end
   object frPayment_1: TfrxReport
-    Version = '5.2.3'
+    Version = '5.4.6'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -9839,7 +9843,7 @@ object dmGlobal: TdmGlobal
     Top = 208
   end
   object frRN04: TfrxReport
-    Version = '5.2.3'
+    Version = '5.4.6'
     DotMatrixReport = False
     EngineOptions.DoublePass = True
     IniFile = '\Software\Fast Reports'
@@ -10806,7 +10810,7 @@ object dmGlobal: TdmGlobal
     Top = 208
   end
   object frPayment_2: TfrxReport
-    Version = '5.2.3'
+    Version = '5.4.6'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -11186,7 +11190,7 @@ object dmGlobal: TdmGlobal
     Top = 208
   end
   object frRN06: TfrxReport
-    Version = '5.2.3'
+    Version = '5.4.6'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -11431,7 +11435,7 @@ object dmGlobal: TdmGlobal
     end
   end
   object frRN16: TfrxReport
-    Version = '5.2.3'
+    Version = '5.4.6'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -13191,7 +13195,7 @@ object dmGlobal: TdmGlobal
     Top = 504
   end
   object frRN018: TfrxReport
-    Version = '5.2.3'
+    Version = '5.4.6'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -14096,7 +14100,7 @@ object dmGlobal: TdmGlobal
     Top = 352
   end
   object frRN08: TfrxReport
-    Version = '5.2.3'
+    Version = '5.4.6'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -15142,7 +15146,7 @@ object dmGlobal: TdmGlobal
     Top = 352
   end
   object frRN010: TfrxReport
-    Version = '5.2.3'
+    Version = '5.4.6'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -15901,7 +15905,7 @@ object dmGlobal: TdmGlobal
     Top = 352
   end
   object frRN012: TfrxReport
-    Version = '5.2.3'
+    Version = '5.4.6'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -17463,7 +17467,7 @@ object dmGlobal: TdmGlobal
     Top = 352
   end
   object frRN013: TfrxReport
-    Version = '5.2.3'
+    Version = '5.4.6'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -18312,7 +18316,7 @@ object dmGlobal: TdmGlobal
     Top = 504
   end
   object frRN022: TfrxReport
-    Version = '5.2.3'
+    Version = '5.4.6'
     DotMatrixReport = False
     EngineOptions.DoublePass = True
     IniFile = '\Software\Fast Reports'
@@ -19202,7 +19206,7 @@ object dmGlobal: TdmGlobal
     Top = 352
   end
   object frRN014: TfrxReport
-    Version = '5.2.3'
+    Version = '5.4.6'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -19836,7 +19840,7 @@ object dmGlobal: TdmGlobal
     end
   end
   object frRN020: TfrxReport
-    Version = '5.2.3'
+    Version = '5.4.6'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
