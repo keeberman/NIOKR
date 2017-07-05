@@ -494,7 +494,7 @@ object dmGlobal: TdmGlobal
       FieldName = 'BANK_ACCOUNT'
       Origin = 'FA.BANK_ACCOUNT'
       Required = True
-      Size = 25
+      Size = 30
     end
     object quAccountCURRENCY_NO: TIntegerField
       DisplayLabel = #1050#1086#1076' '#1074#1072#1083#1102#1090#1099
@@ -1191,14 +1191,14 @@ object dmGlobal: TdmGlobal
     end
     object quTreatyCUST_BANK_ACCOUNT: TStringField
       DisplayLabel = #1057#1095#1077#1090' '#1079#1072#1082#1072#1079#1095#1080#1082#1072
-      DisplayWidth = 14
+      DisplayWidth = 28
       FieldKind = fkInternalCalc
       FieldName = 'CUST_BANK_ACCOUNT'
       Origin = 'FA_CUST.BANK_ACCOUNT'
       Required = True
       Visible = False
       OnChange = RefreshCalcFields
-      Size = 25
+      Size = 30
     end
     object quTreatyCUST_CURRENCY_NO: TIntegerField
       DisplayLabel = #1050#1086#1076' '#1074#1072#1083#1102#1090#1099' '#1079#1072#1082#1072#1079#1095#1080#1082#1072
@@ -1304,13 +1304,13 @@ object dmGlobal: TdmGlobal
     end
     object quTreatyEXEC_BANK_ACCOUNT: TStringField
       DisplayLabel = #1057#1095#1077#1090' '#1080#1089#1087#1086#1083#1085#1080#1090#1077#1083#1103
-      DisplayWidth = 15
+      DisplayWidth = 28
       FieldKind = fkInternalCalc
       FieldName = 'EXEC_BANK_ACCOUNT'
       Origin = 'FA_EXEC.BANK_ACCOUNT'
       Required = True
       OnChange = RefreshCalcFields
-      Size = 25
+      Size = 30
     end
     object quTreatyEXEC_CURRENCY_NO: TIntegerField
       DisplayLabel = #1050#1086#1076' '#1074#1072#1083#1102#1090#1099' '#1080#1089#1087#1086#1083#1085#1080#1090#1077#1083#1103
@@ -2015,13 +2015,13 @@ object dmGlobal: TdmGlobal
     end
     object quAgreemStageCUST_BANK_ACCOUNT: TStringField
       DisplayLabel = #1057#1095#1077#1090' '#1079#1072#1082#1072#1079#1095#1080#1082#1072
-      DisplayWidth = 25
+      DisplayWidth = 28
       FieldKind = fkInternalCalc
       FieldName = 'CUST_BANK_ACCOUNT'
       Origin = 'FA_CUST.BANK_ACCOUNT'
       Visible = False
       OnChange = RefreshCalcFields
-      Size = 25
+      Size = 30
     end
     object quAgreemStageCUST_NAME: TStringField
       DisplayLabel = #1055#1086#1083#1085'.'#1085#1072#1080#1084'. '#1079#1072#1082#1072#1079#1095#1080#1082#1072
@@ -2043,12 +2043,12 @@ object dmGlobal: TdmGlobal
     end
     object quAgreemStageEXEC_BANK_ACCOUNT: TStringField
       DisplayLabel = #1057#1095#1077#1090' '#1080#1089#1087#1086#1083#1085#1080#1090#1077#1083#1103
-      DisplayWidth = 16
+      DisplayWidth = 28
       FieldKind = fkInternalCalc
       FieldName = 'EXEC_BANK_ACCOUNT'
       Origin = 'FA_EXEC.BANK_ACCOUNT'
       OnChange = RefreshCalcFields
-      Size = 25
+      Size = 30
     end
     object quAgreemStageEXEC_NAME: TStringField
       DisplayLabel = #1055#1086#1083#1085'.'#1085#1072#1080#1084'. '#1080#1089#1087#1086#1083#1085#1080#1090#1077#1083#1103
@@ -2358,12 +2358,13 @@ object dmGlobal: TdmGlobal
     end
     object quTreatyStageCUST_BANK_ACCOUNT: TStringField
       DisplayLabel = #1057#1095#1077#1090' '#1079#1072#1082#1072#1079#1095#1080#1082#1072
+      DisplayWidth = 28
       FieldKind = fkInternalCalc
       FieldName = 'CUST_BANK_ACCOUNT'
       Origin = 'FA_CUST.BANK_ACCOUNT'
       Visible = False
       OnChange = RefreshCalcFields
-      Size = 25
+      Size = 30
     end
     object quTreatyStageCUST_NAME: TStringField
       DisplayLabel = #1055#1086#1083#1085'.'#1085#1072#1080#1084'. '#1079#1072#1082#1072#1079#1095#1080#1082#1072
@@ -2384,12 +2385,12 @@ object dmGlobal: TdmGlobal
     end
     object quTreatyStageEXEC_BANK_ACCOUNT: TStringField
       DisplayLabel = #1057#1095#1077#1090' '#1080#1089#1087#1086#1083#1085#1080#1090#1077#1083#1103
-      DisplayWidth = 16
+      DisplayWidth = 28
       FieldKind = fkInternalCalc
       FieldName = 'EXEC_BANK_ACCOUNT'
       Origin = 'FA_EXEC.BANK_ACCOUNT'
       OnChange = RefreshCalcFields
-      Size = 25
+      Size = 30
     end
     object quTreatyStageEXEC_NAME: TStringField
       DisplayLabel = #1055#1086#1083#1085'.'#1085#1072#1080#1084'. '#1080#1089#1087#1086#1083#1085#1080#1090#1077#1083#1103
@@ -21047,8 +21048,8 @@ object dmGlobal: TdmGlobal
       494C455F56455253494F4E0100000000000900000046494C455F53495A450100
       00000000}
     Session = seOracle
-    Left = 120
-    Top = 576
+    Left = 144
+    Top = 648
     object dtmfldorcldtst1FILE_DATE: TDateTimeField
       FieldName = 'FILE_DATE'
     end
