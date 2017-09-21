@@ -282,6 +282,12 @@ type
     lbl1: TLabel;
     edtMIPODR_ID: TRxDBComboEdit;
     dbtxtMIPODR_SNAIM: TDBText;
+    pnl1: TPanel;
+    pnl2: TPanel;
+    grpReporting: TGroupBox;
+    pnl3: TPanel;
+    pnl4: TPanel;
+    grpAgStReporting: TGroupBox;
     procedure FormCreate(Sender: TObject);
     procedure ShowHandBook(_Sender: TObject);
              {Отображает дочернюю форму со справочником MIPODR.
